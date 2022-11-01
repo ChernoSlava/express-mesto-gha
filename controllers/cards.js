@@ -3,11 +3,7 @@ const Card = require('../models/card');
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      if (cards.length >= 1) {
-        res.send({ data: cards });
-      } else {
-        res.status(404).send({ message: 'Ни одной карточки не найдено!' });
-      }
+      res.send(cards);
     })
     .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
 };
@@ -31,7 +27,11 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card) {
-        res.send({ message: 'Карточка удалена' });
+        Card.find({})
+          .then((cards) => {
+            console.log(cards);
+            res.send({ message: 'Карточка удалена' });
+          });
       } else {
         res.status(404).send({ message: 'Карточка с таким _id не найдена' });
       }
