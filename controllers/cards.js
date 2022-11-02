@@ -1,11 +1,26 @@
+const { constants } = require('http2');
 const Card = require('../models/card');
+
+const responseBadRequestError = (res, message) => res
+  .status(constants.HTTP_STATUS_BAD_REQUEST)
+  .send({
+    message: `Некорректные данные. ${message}`,
+  });
+
+const responseServerError = (res, message) => res
+  .status(constants.HTTP_STATUS_SERVICE_UNAVAILABLE)
+  .send({
+    message: `На сервере произошла ошибка. ${message}`,
+  });
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
       res.send(cards);
     })
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+    .catch((err) => {
+      responseServerError(res, err.message);
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -15,9 +30,9 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
+        responseBadRequestError(res, err.message);
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        responseServerError(res, err.message);
       }
     });
 };
@@ -33,9 +48,9 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        responseBadRequestError(res, err.message);
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        responseServerError(res, err.message);
       }
     });
 };
@@ -57,9 +72,9 @@ module.exports.addLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        responseBadRequestError(res, err.message);
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        responseServerError(res, err.message);
       }
     });
 };
@@ -81,9 +96,9 @@ module.exports.removeLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        responseBadRequestError(res, err.message);
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        responseServerError(res, err.message);
       }
     });
 };
