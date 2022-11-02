@@ -14,7 +14,7 @@
     "url": "https://github.com/ChernoSlava/express-mesto-gha/issues"
   },
   "scripts": {
-    "lint": "npx eslint app.js",
+    "lint": "npx eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
