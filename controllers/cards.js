@@ -1,14 +1,13 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
-const InternalServerError = require('../errors/InternalServerError');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
       res.send(cards);
     })
-    .catch(() => next(new InternalServerError('Ошибка по умолчанию.')));
+    .catch(next);
 };
 
 module.exports.createCard = (req, res, next) => {
@@ -19,10 +18,9 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании карточки.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.deleteCard = (req, res, next) => {
@@ -34,10 +32,9 @@ module.exports.deleteCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.addLike = (req, res, next) => {
@@ -55,10 +52,9 @@ module.exports.addLike = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.removeLike = (req, res, next) => {
@@ -76,8 +72,7 @@ module.exports.removeLike = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };

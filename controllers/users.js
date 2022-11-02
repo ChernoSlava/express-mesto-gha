@@ -1,14 +1,13 @@
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
-const InternalServerError = require('../errors/InternalServerError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch(() => next(new InternalServerError('Ошибка по умолчанию.')));
+    .catch(next);
 };
 
 module.exports.getUserById = (req, res, next) => {
@@ -20,10 +19,9 @@ module.exports.getUserById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -34,10 +32,9 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.updateUserInfo = (req, res, next) => {
@@ -55,10 +52,9 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.updateUserAvatar = (req, res, next) => {
@@ -76,8 +72,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(new InternalServerError('Ошибка по умолчанию.'));
       }
-    });
+    })
+    .catch(next);
 };
