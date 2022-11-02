@@ -1,50 +1,46 @@
 const User = require('../models/user');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const InternalServerError = require('../errors/InternalServerError');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
-      if (users.length >= 1) {
-        res.send({ data: users });
-      } else {
-        res.status(404).send({ message: 'Пользователи не найден.' });
-      }
+      res.send(users);
     })
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+    .catch(() => next(new InternalServerError('Ошибка по умолчанию.')));
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-      }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные' });
+        next(new BadRequestError('Переданы некорректные данные.'));
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        next(new InternalServerError('Ошибка по умолчанию.'));
       }
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        next(new BadRequestError('Переданы некорректные данные.'));
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        next(new InternalServerError('Ошибка по умолчанию.'));
       }
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -52,23 +48,20 @@ module.exports.updateUserInfo = (req, res) => {
     runValidators: true,
     upsert: false,
   })
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-      }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+        next(new BadRequestError('Переданы некорректные данные.'));
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        next(new InternalServerError('Ошибка по умолчанию.'));
       }
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, {
@@ -76,18 +69,15 @@ module.exports.updateUserAvatar = (req, res) => {
     runValidators: true,
     upsert: false,
   })
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-      }
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' });
+        next(new BadRequestError('Переданы некорректные данные.'));
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию.' });
+        next(new InternalServerError('Ошибка по умолчанию.'));
       }
     });
 };

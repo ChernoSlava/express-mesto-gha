@@ -1,15 +1,20 @@
 {
   "name": "express-mesto",
-  "author": "Chernogorov Viacheslav",
-  "version": "1.0.0",
   "description": "Backend for Mesto project",
+  "version": "1.0.0",
   "main": "app.js",
   "dependencies": {
     "express": "^4.18.2",
     "mongoose": "^5.13.15"
   },
+  "author": "Chernogorov Viacheslav <slavachernogorv@mail.ru> (https://www.instagram.com/chernoslava/)",
+  "license": "ISC",
+  "homepage": "https://github.com/ChernoSlava/express-mesto-gha#readme",
+  "bugs": {
+    "url": "https://github.com/ChernoSlava/express-mesto-gha/issues"
+  },
   "scripts": {
-    "lint": "npx eslint",
+    "lint": "npx eslint app.js",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
