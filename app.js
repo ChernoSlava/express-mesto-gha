@@ -31,7 +31,7 @@ app.use(limiter);
 
 app.post(
   '/signin',
-  () => celebrate({
+  celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
@@ -41,22 +41,22 @@ app.post(
 );
 app.post(
   '/signup',
-  () => celebrate({
+  celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
-      // name: Joi.string().min(2).max(30),
+      name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().required().pattern(/^(https?:\/\/)?([\w-]+\.[\w-]+)\S*$/, 'URL'),
+      avatar: Joi.string().pattern(/^(https?:\/\/)?([\w-]+\.[\w-]+)\S*$/, 'URL'),
     }),
   }),
   createUser,
 );
 
-app.use(auth);
+// app.use(auth);
 
-app.use('/users', usersRoute);
-app.use('/cards', cardsRoute);
+app.use('/users', auth, usersRoute);
+app.use('/cards', auth, cardsRoute);
 
 app.use('*', notFoundRoute);
 
