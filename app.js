@@ -10,8 +10,8 @@ const errorHandler = require('./middlewares/errorHandler');
 const { usersRoute } = require('./routes/users');
 const { cardsRoute } = require('./routes/cards');
 const { notFoundRoute } = require('./routes/notFound');
-const { login, createUser } = require('./routes/users');
-const { auth } = require('./middlewares/auth');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -31,7 +31,7 @@ app.use(limiter);
 
 app.post(
   '/signin',
-  celebrate({
+  () => celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
@@ -41,7 +41,7 @@ app.post(
 );
 app.post(
   '/signup',
-  celebrate({
+  () => celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
