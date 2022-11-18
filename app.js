@@ -33,7 +33,7 @@ app.post(
   '/signin',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required().email(),
+      email: Joi.string().email().required(),
       password: Joi.string().required(),
     }),
   }),
@@ -52,8 +52,6 @@ app.post(
   }),
   createUser,
 );
-
-// app.use(auth);
 
 app.use('/users', auth, usersRoute);
 app.use('/cards', auth, cardsRoute);
