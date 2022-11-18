@@ -9,17 +9,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Terminator T-800',
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Killing machine',
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
-    default: 'https://www.meme-arsenal.com/memes/3cf71989d5ad710aad6ec5d338bf4052.jpg',
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
         // eslint-disable-next-line no-useless-escape

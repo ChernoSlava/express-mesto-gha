@@ -13,6 +13,8 @@ const {
 
 usersRoute.get('/', getUsers);
 
+usersRoute.get('/me', getCurrentUser);
+
 usersRoute.get(
   '/:userId',
   celebrate({
@@ -22,7 +24,6 @@ usersRoute.get(
   }),
   getUserById,
 );
-usersRoute.get('/me', getCurrentUser);
 
 usersRoute.patch(
   '/me',
