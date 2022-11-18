@@ -53,8 +53,10 @@ app.post(
   createUser,
 );
 
-app.use('/users', auth, usersRoute);
-app.use('/cards', auth, cardsRoute);
+app.use(auth);
+
+app.use('/users', usersRoute);
+app.use('/cards', cardsRoute);
 
 app.use('*', notFoundRoute);
 
