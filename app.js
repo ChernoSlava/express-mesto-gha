@@ -4,7 +4,7 @@ require('dotenv').config();
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { errors, celebrate, Joi } = require('celebrate');
-
+const console = require('console');
 const errorHandler = require('./middlewares/errorHandler');
 
 const { usersRoute } = require('./routes/users');
@@ -64,6 +64,5 @@ app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);
 });
