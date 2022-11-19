@@ -113,7 +113,6 @@ module.exports.updateUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true,
     runValidators: true,
-    upsert: false,
   })
     .then((user) => {
       if (user) {

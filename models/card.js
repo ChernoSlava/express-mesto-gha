@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { validUrlLink } = require('../middlewares/regularExpression');
+
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,8 +14,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        // eslint-disable-next-line no-useless-escape
-        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/g.test(v);
+        return validUrlLink.test(v);
       },
       message: 'Возникла ошибка с валидацией url',
     },

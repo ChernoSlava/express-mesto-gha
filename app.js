@@ -3,15 +3,12 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { errors, celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const console = require('console');
+
 const errorHandler = require('./middlewares/errorHandler');
 
-const { usersRoute } = require('./routes/users');
-const { cardsRoute } = require('./routes/cards');
-const { notFoundRoute } = require('./routes/notFound');
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+const router = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -29,36 +26,7 @@ app.use(helmet());
 
 app.use(limiter);
 
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-      avatar: Joi.string().pattern(/^(https?:\/\/)?([\w-]+\.[\w-]+)\S*$/, 'URL'),
-    }),
-  }),
-  createUser,
-);
-
-app.use(auth);
-
-app.use('/users', usersRoute);
-app.use('/cards', cardsRoute);
-
-app.use('*', notFoundRoute);
+app.use(router);
 
 app.use(errors());
 app.use(errorHandler);
