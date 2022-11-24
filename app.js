@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const console = require('console');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const errorHandler = require('./middlewares/errorHandler');
 
 const router = require('./routes/index');
@@ -26,8 +28,10 @@ app.use(helmet());
 
 app.use(limiter);
 
+app.use(requestLogger);
 app.use(router);
 
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 

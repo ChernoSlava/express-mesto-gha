@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const cardsRoute = express.Router();
 
+const { validUrlLink } = require('../middlewares/regularExpression');
 const {
   getCards,
   createCard,
@@ -18,7 +19,7 @@ cardsRoute.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required().pattern(/^(https?:\/\/)?([\w-]+\.[\w-]+)\S*$/, 'URL'),
+      link: Joi.string().required().pattern(validUrlLink, 'URL'),
     }),
   }),
   createCard,

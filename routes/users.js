@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 
 const usersRoute = express.Router();
 
+const { validUrlLink } = require('../middlewares/regularExpression');
 const {
   getUsers,
   getUserById,
@@ -40,7 +41,7 @@ usersRoute.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().required().pattern(/^(https?:\/\/)?([\w-]+\.[\w-]+)\S*$/, 'URL'),
+      avatar: Joi.string().required().pattern(validUrlLink, 'URL'),
     }),
   }),
   updateUserAvatar,
